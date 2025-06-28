@@ -70,3 +70,37 @@ int printVectori(FILE *stream, int *vector, size_t size) {
   }
   return sumChar;
 }
+
+int printVectorf(FILE *stream, float *vector, size_t size, int decFig) {
+  /**
+   *  print a vector of float on stream
+   *  decFig defines the figures after decimal point
+   */
+  char template[10];
+
+  if (stream == NULL || vector == NULL) {
+    fprintf(stderr, "Stream or vector null.\n");
+    return -1;
+  }
+
+  if ((decFig <= 0) || (decFig > 9)) {
+    fprintf(stderr, "Decimal figures out of range.\n");
+    return -1;
+  }
+
+  sprintf(template, "%%.%df", decFig);
+  int sumChar = 0;
+
+  fputc('[', stream);
+  sumChar++;
+  for (int i = 0; i < (int)size; i++) {
+    if (i == ((int)size - 1)) {
+      sumChar += fprintf(stream, template, vector[i]);
+      sumChar += fprintf(stream, "]\n");
+      continue;
+    }
+    sumChar += fprintf(stream, template, vector[i]);
+    sumChar += fprintf(stream, ", ");
+  }
+  return sumChar;
+}
