@@ -5,7 +5,7 @@
 
 int main() {
     int *VectorInt;
-    size_t size = 25;
+    size_t size = 15;
 
     srand(time(NULL));
 
