@@ -20,7 +20,7 @@ int main() {
             VectorInt[i] = rand() % 100;
         }
 
-        printVectori(stdout, VectorInt, size);
+        print_vector_int(stdout, VectorInt, size);
     }
     free(VectorInt);
     return 0;

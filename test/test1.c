@@ -20,7 +20,7 @@ int main() {
         doubleVector[i] = (double) rand() / RAND_MAX;
     }
 
-    sum = printVectord(stdout, doubleVector, size, 4);
+    sum = print_vector_double(stdout, doubleVector, size, 4);
     printf("sum:%d char. \n", sum);
 
     return 0;

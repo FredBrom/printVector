@@ -4,6 +4,6 @@
 int main() {
     char *strings[] = {"banana", "apple", "peach", "orange", NULL};
 
-    printVectors(stdout, strings);
+    print_vector_string(stdout, strings);
     return 0;
 }

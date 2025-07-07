@@ -1,34 +1,74 @@
+ # === Configs ===
+
 CC = gcc
-CFLAGS = -Wall
-SRC_DIR = src
-BIN_DIR = bin
-OBJ_DIR = obj
+CFLAGS = -Wall -Wextra -std=c99 -MMD -MP 
+LDFLAGS = -lprintVector
 INCLUDE_DIR = include
-TESTS_DIR = test
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+LIB_DIR = lib
+TEST_DIR = test
 
-# Selec all src files
+# === source Files and Obj ===
+
 SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
-
-# Generate a list of object files to target
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+DEP_FILES := $(OBJ_FILES:.o=.d)
 
-# Select all tests files
-TEST_FILES := $(wildcard $(TESTS_DIR)/*.c)
-TEST_BINS := $(patsubst $(TESTS_DIR)/%.c,$(BIN_DIR)/%, $(TEST_FILES))
+# === Tests ===
 
-# Compile .c file to object code
+TEST_SRC := $(wildcard $(TEST_DIR)/*.c)
+TEST_BINS := $(patsubst $(TEST_DIR)/%.c,$(BIN_DIR)/%,$(TEST_SRC))
+
+# === Main file ===
+
+#MAIN_EXEC = $(BIN_DIR)/main
+
+# === Rules ===
+
+.PHONY: all clean test run make_dirs lib
+
+all: make_dirs $(OBJ_FILES) lib $(TEST_BINS)
+
+# compile .o
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -I$(INCLUDE_DIR) $< -o $@
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -L$(LIB_DIR) -c $< -o $@
 
-# Compile .c files in test to binaries
-$(BIN_DIR)/%: $(TESTS_DIR)/%.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -I$(INCLUDE_DIR) $(OBJ_FILES) $< -o $@
+# compile test
+$(BIN_DIR)/%: $(TEST_DIR)/%.c $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(LDFLAGS) -I$(INCLUDE_DIR) -L$(LIB_DIR) $< -o $@
 
-# Main Target
-all:  make_dirs $(OBJ_FILES) $(TEST_BINS)
+# main exex
+$(MAIN_EXEC): $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(LDFLAGS) -L$(LIB_DIR) -I$(INCLUDE_DIR) -o $@ $^
 
-clean:
-	rm -rf $(BIN_DIR) $(OBJ_DIR)
+# run tests
+test: make_dirs $(OBJ_FILES) $(TEST_BINS)
+	@echo "Running tests..."
+	@for bin in $(TEST_BINS); do \
+		echo "==> $$bin"; \
+		./$$bin; \
+		echo ""; \
+	done
 
+# Main execution
+run: $(MAIN_EXEC)
+	./$(MAIN_EXEC)
+
+# Make lib
+lib: make_dirs $(OBJ_FILES)
+	ar rcs $(LIB_DIR)/libprintVector.a $(OBJ_DIR)/printVector.o
+	tar cvfz LIB_printVector.tar.gz ./lib/libprintVector.a ./include/printVector.h
+
+# make dirs
 make_dirs:
-	mkdir -p $(SRC_DIR) $(BIN_DIR) $(INCLUDE_DIR) $(OBJ_DIR) $(TESTS_DIR)
+	mkdir -p $(OBJ_DIR) $(BIN_DIR) $(LIB_DIR)
+
+# clean all
+clean:
+	rm -rf $(OBJ_FILES) $(TEST_BINS) $(DEP_FILES) $(BIN_DIR)/* $(LIB_DIR)/*
+
+
+# Dependece files .d
+-include $(DEP_FILES)

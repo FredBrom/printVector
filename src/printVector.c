@@ -1,7 +1,7 @@
 #include "printVector.h"
 #include <stdio.h>
 
-int printVectord(FILE *stream, double *vector, size_t size, int decFig) {
+int print_vector_double(FILE *stream, double *vector, size_t size, int decFig) {
   /**
    *  print a vector of double on stream
    *  decFig defines the figures after decimal point
@@ -13,7 +13,7 @@ int printVectord(FILE *stream, double *vector, size_t size, int decFig) {
     return -1;
   }
 
-  if ((decFig <= 0) || (decFig > 9)) {
+  if ((decFig < 0) || (decFig > 9)) {
     fprintf(stderr, "Decimal figures out of range.\n");
     return -1;
   }
@@ -35,7 +35,7 @@ int printVectord(FILE *stream, double *vector, size_t size, int decFig) {
   return sumChar;
 }
 
-int printVectors(FILE *stream, char **vector) {
+int print_vector_string(FILE *stream, char **vector) {
   /**
    * print a vector of strings
    */
@@ -55,7 +55,7 @@ int printVectors(FILE *stream, char **vector) {
   return sumChar;
 }
 
-int printVectori(FILE *stream, int *vector, size_t size) {
+int print_vector_int(FILE *stream, int *vector, size_t size) {
   /**
    *  print a vector of integers
    */
@@ -71,7 +71,7 @@ int printVectori(FILE *stream, int *vector, size_t size) {
   return sumChar;
 }
 
-int printVectorf(FILE *stream, float *vector, size_t size, int decFig) {
+int print_vector_float(FILE *stream, float *vector, size_t size, int decFig) {
   /**
    *  print a vector of float on stream
    *  decFig defines the figures after decimal point
@@ -83,7 +83,7 @@ int printVectorf(FILE *stream, float *vector, size_t size, int decFig) {
     return -1;
   }
 
-  if ((decFig <= 0) || (decFig > 9)) {
+  if ((decFig < 0) || (decFig > 9)) {
     fprintf(stderr, "Decimal figures out of range.\n");
     return -1;
   }
